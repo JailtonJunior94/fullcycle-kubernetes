@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: goserver
-  replicas: 10
+  replicas: 1
   template:
     metadata:
       labels:
@@ -19,7 +19,7 @@ spec:
           image: jailtonjunior/hello-go
           resources:
             limits:
-              memory: "128Mi"
+              memory: "32Mi"
               cpu: "50m"
           ports:
             - containerPort: 80
