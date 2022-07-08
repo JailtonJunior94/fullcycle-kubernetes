@@ -16,7 +16,31 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: jailtonjunior/hello-go
+          image: jailtonjunior/hello-go:v1
+
+          startupProbe: # Garante a inicialização do pod
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 3 # De quanto em quanto tempo ele faz a verificação
+            failureThreshold: 10 # Se deu problema X vezes informa que a aplicação não está pronta
+
+          readinessProbe: # Verifica se está pronta para ser utilizado [inicialização da aplicação] [desvia o trafégo]
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 3 # De quanto em quanto tempo ele faz a verificação
+            failureThreshold: 1 # Se deu problema X vezes informa que a aplicação não está pronta
+
+          livenessProbe: # Verifica a saúde da aplicação [reinicia a aplicação]
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 5 # De quanto em quanto tempo ele faz a verificação
+            failureThreshold: 3 # Quantas vezes ele precisa dar erro para reiniciar o pod
+            timeoutSeconds: 5 # Tempo limite para retornar um status da aplicação
+            successThreshold: 1 # Quantas vezes ele precisa testar pra verificar que está tudo certo [avisar que está OK]
+
           resources:
             limits:
               memory: "32Mi"
